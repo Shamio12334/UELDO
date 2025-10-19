@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ueldo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+  <nav class="user-nav">
+    {% if session.user_phone %}
+        <span>Welcome, {{ session.user_phone }}!</span>
+        <a href="/logout">Logout</a>
+    {% else %}
+        <a href="/login.html">Log In</a>
+        <a href="/signup.html">Sign Up</a>
+    {% endif %}
+  </nav>
+  <hr>
+  <header>
+    <div class="header-content">
+      <h1>Ueldo</h1>
+    </div>
+  </header>
+  <main class="container">
+    <h2>Explore Categories</h2>
+    <p style="margin-top:8px;color:#5f5f6e">See what’s active, what’s upcoming, and what needs details.</p>
+    <div class="categories" id="categories-container"></div>
+  </main>
+  <script>
+    (function(){
+      const THREE = ['sports','creativity','socials'];
+      const categoriesEl = document.getElementById('categories-container');
+      
+      // THIS IS THE NEW, CORRECTED CODE
+      async function getData() {
+          const response = await fetch('/api/competitions', { cache: 'no-store' });
+          if (!response.ok) {
+              throw new Error('Failed to fetch competitions from API');
+          }
+          return await response.json();
+      }
+
+      function tryParseDate(str){
+        if(!str) return null;
+        const normalized = str.trim().toLowerCase();
+        if(['tba','coming soon','coming soon!'].includes(normalized)) return null;
+        const d = new Date(str);
+        return isNaN(d.getTime()) ? null : d;
+      }
+      function statusForCompetitions(list){
+        if(!list || !list.length) return 'empty';
+        let hasFuture = false, hasKnown = false;
+        const now = new Date();
+        for(const c of list){
+          const d = tryParseDate(c.date);
+          if(d){ hasKnown = true; if(d >= now) hasFuture = true; }
+        }
+        if(hasFuture) return 'scheduled';
+        if(!hasKnown) return 'upcoming';
+        return 'past';
+      }
+      function summarizeCategory(catName, catData){
+        let total = 0, subCount = 0;
+        const statusCounts = {scheduled:0, upcoming:0, past:0, empty:0};
+        for(const sub in catData){
+          subCount++;
+          const arr = catData[sub] || [];
+          total += arr.length;
+          statusCounts[statusForCompetitions(arr)]++;
+        }
+        let overall = 'empty';
+        if(statusCounts.scheduled) overall = 'scheduled';
+        else if(statusCounts.upcoming) overall = 'upcoming';
+        else if(statusCounts.past) overall = 'past';
+        return {total, subCount, overall, statusCounts};
+      }
+      function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+      function imgFor(cat){
+        const map = {
+          sports: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=1200&auto=format&fit=crop',   
+          creativity: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop', 
+          socials: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=1200&auto=format&fit=crop'    
+        };
+        return map[cat] || 'https://via.placeholder.com/1200x800?text='+encodeURIComponent(cat);
+      }
+      function statusLabel(s){
+        return s==='scheduled'?'Scheduled':(s==='upcoming'?'Upcoming / TBA':(s==='past'?'Past':'No items'));
+      }
+      getData().then(data => {
+        const cats = THREE.map(c => [c, data[c] || {}]);
+        categoriesEl.innerHTML = cats.map(([cat,catData]) => {
+          const summary = summarizeCategory(cat, catData);
+          return `
+            <a href="competitions.html?category=${encodeURIComponent(cat)}" class="category-block">
+              <img src="${imgFor(cat)}" alt="${cat}">
+              <div class="overlay">
+                <h2>${capitalize(cat)}</h2>
+                <div class="badges">
+                  <span class="badge"><span class="dot"></span> ${summary.subCount} subcategories</span>
+                  <span class="badge"><span class="dot"></span> ${summary.total} competitions</span>
+                  <span class="badge status-${summary.overall}"><span class="dot"></span> ${statusLabel(summary.overall)}</span>
+                </div>
+              </div>
+            </a>
+          `;
+        }).join('');
+      }).catch(err => {
+        categoriesEl.innerHTML = '<div class="error-message">Unable to load categories.</div>';
+        console.error(err);
+      });
+    })();
+  </script>
+</body>
+</html>

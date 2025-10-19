@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Manage Competitions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Competitions</h1>
+        
+        <h2 id="form-title">Add New Competition</h2>
+        <form id="add-form">
+            <input type="hidden" name="id">
+            <label>Category: <input type="text" name="category" required placeholder="e.g., sports, creativity, socials (or new)"></label><br>
+            <label>Subcategory: <input type="text" name="subcategory" required placeholder="e.g., chess, writing (or new)"></label><br>
+            <label>Name: <input type="text" name="name" required></label><br>
+            <label>Description: <textarea name="description" required></textarea></label><br>
+            <label>Date: <input type="text" name="date" placeholder="e.g., 2025-10-10"></label><br>
+            <label>Location: <input type="text" name="location"></label><br>
+            <label>Participant Limit: <input type="number" name="participant_limit"></label><br>
+            <label>Entry Fee: <input type="number" name="entry_fee"></label><br>
+            <label>Prizes: <input type="text" name="prizes"></label><br>
+            <label>Registration Link: <input type="text" name="link"></label><br>
+            <label>Image URL: <input type="text" name="image"></label><br>
+            <button type="submit">Save Competition</button>
+        </form>
+        <div id="message"></div>
+
+        <h2>Existing Competitions</h2>
+        <div id="competition-list"></div>
+    </div>
+
+    <script>
+    // Load existing competitions
+    async function loadCompetitions() {
+        try {
+            const response = await fetch('/admin/competitions', {
+                credentials: 'include'  // Reuse Basic Auth credentials
+            });
+            if (!response.ok) throw new Error('Failed to fetch competitions');
+            const data = await response.json();
+            const list = document.getElementById('competition-list');
+            list.innerHTML = '';
+            for (const category in data) {
+                for (const subcategory in data[category]) {
+                    data[category][subcategory].forEach(comp => {
+                        const div = document.createElement('div');
+                        div.className = 'competition-item';
+                        div.innerHTML = `
+                            <p><strong>ID:</strong> ${comp.id} | <strong>${category} > ${subcategory}</strong>: ${comp.name}
+                            <button onclick="window.location.href='admin.html?id=${comp.id}'">Edit</button>
+                            <button onclick="deleteCompetition(${comp.id})">Delete</button></p>
+                        `;
+                        list.appendChild(div);
+                    });
+                }
+            }
+        } catch (err) {
+            document.getElementById('competition-list').innerHTML = 'Error loading competitions: ' + err.message;
+        }
+    }
+
+    // Load competition for editing if ID is in URL
+    async function loadCompetitionForEdit() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        if (id) {
+            document.getElementById('form-title').textContent = 'Edit Competition';
+            try {
+                const response = await fetch(`/admin/competitions/${id}`, {
+                    credentials: 'include'  // Reuse Basic Auth credentials
+                });
+                if (!response.ok) throw new Error('Failed to fetch competition');
+                const comp = await response.json();
+                const form = document.getElementById('add-form');
+                form.elements['id'].value = comp.id || '';
+                form.elements['category'].value = comp.category || '';  // Add these if needed
+                form.elements['subcategory'].value = comp.subcategory || '';
+                form.elements['name'].value = comp.name || '';
+                form.elements['description'].value = comp.description || '';
+                form.elements['date'].value = comp.date || '';
+                form.elements['location'].value = comp.location || '';
+                form.elements['participant_limit'].value = comp.participant_limit || '';
+                form.elements['entry_fee'].value = comp.entry_fee || '';
+                form.elements['prizes'].value = comp.prizes || '';
+                form.elements['link'].value = comp.link || '';
+                form.elements['image'].value = comp.image || '';
+            } catch (err) {
+                document.getElementById('message').textContent = 'Error: ' + err.message;
+            }
+        }
+    }
+
+    // Handle form submission (add or update)
+    document.getElementById('add-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        const id = data.id;
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `/admin/competitions/${id}` : '/admin/competitions';
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+                credentials: 'include'  // Reuse Basic Auth credentials
+            });
+            if (!response.ok) throw new Error(id ? 'Failed to update competition' : 'Failed to add competition');
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message || result.error;
+            e.target.reset();
+            document.getElementById('form-title').textContent = 'Add New Competition';
+            loadCompetitions();
+            setTimeout(() => location.href = '/admin.html', 2000); // Reset to add mode
+        } catch (err) {
+            document.getElementById('message').textContent = 'Error: ' + err.message;
+        }
+    });
+
+    // Delete competition
+    async function deleteCompetition(id) {
+        if (!confirm('Are you sure you want to delete this competition?')) return;
+        try {
+            const response = await fetch(`/admin/competitions/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'  // Reuse Basic Auth credentials
+            });
+            if (!response.ok) throw new Error('Failed to delete competition');
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+            loadCompetitions();
+        } catch (err) {
+            document.getElementById('message').textContent = 'Error: ' + err.message;
+        }
+    }
+
+    // Initial load
+    loadCompetitions();
+    loadCompetitionForEdit();
+</script>
+</body>
+</html>

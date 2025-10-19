@@ -1,0 +1,520 @@
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f8f1e9 0%, #e8ecef 100%);
+    color: #1c1c1e;
+    line-height: 1.6;
+}
+
+/* Header styles */
+header {
+    background: linear-gradient(135deg, #4a4a8c 0%, #7b7bf3 100%);
+    padding: 20px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+header h1 {
+    color: white;
+    font-size: 2.5em;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+nav {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+    border-radius: 25px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+/* Container and layout */
+.container {
+    width: 95%;
+    max-width: 1400px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+/* Categories grid */
+.categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin: 30px 0 50px;
+}
+
+.category-block {
+    position: relative;
+    height: 320px;
+    border-radius: 20px;
+    overflow: hidden;
+    text-decoration: none;
+    color: white;
+    transition: all 0.4s ease;
+    box-shadow: 0 10px 30px rgba(74, 74, 140, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.category-block:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(74, 74, 140, 0.25);
+}
+
+.category-block img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    inset: 0;
+    z-index: 0;
+}
+
+.category-block:hover img {
+    transform: scale(1.08);
+}
+
+.overlay {
+    position: relative;
+    z-index: 1;
+    padding: 22px;
+    background: linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.25) 60%, transparent);
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.overlay h2 {
+    font-size: 1.6em;
+    margin: 0;
+    font-weight: 700;
+}
+
+.overlay p {
+    font-size: 0.95em;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+/* Small badges row on category cards */
+.badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.8em;
+    font-weight: 600;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(2px);
+}
+
+.badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+/* Status colors */
+.status-scheduled .dot { background: #22c55e; }   /* green */
+.status-upcoming .dot { background: #eab308; }    /* amber */
+.status-past .dot { background: #ef4444; }        /* red */
+.status-empty .dot { background: #9ca3af; }       /* gray */
+
+/* Search and filter section */
+.search-filter-section {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(74, 74, 140, 0.1);
+}
+
+#subcategory-dropdown {
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1em;
+    margin: 20px 0;
+    border: 2px solid #ddd;
+}
+
+/* Competition cards */
+.competition-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(74, 74, 140, 0.1);
+    transition: all 0.3s ease;
+}
+
+.competition-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(74, 74, 140, 0.2);
+}
+
+.competition-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.competition-content {
+    padding: 30px;
+}
+
+.competition-content h3 {
+    font-size: 1.4em;
+    color: #4a4a8c;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.competition-description {
+    color: #5f5f6e;
+    margin-bottom: 16px;
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+.comp-badges { display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 12px; }
+.comp-badge { background:#f3f4f6; color:#374151; border-radius:999px; padding:6px 10px; font-size:.8em; font-weight:600; }
+
+.competition-meta { margin: 12px 0; }
+.competition-meta p { margin: 6px 0; color: #5f5f6e; font-size: 0.95em; }
+
+.competition-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.register-btn, .whatsapp-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    font-size: 0.95em;
+}
+
+.register-btn {
+    background: #4a4a8c;
+    color: white;
+}
+.register-btn:hover { background: #3b3b70; transform: translateY(-2px); }
+
+.whatsapp-btn {
+    background: #25d366;
+    color: white;
+}
+.whatsapp-btn:hover { background: #1ebe57; transform: translateY(-2px); }
+
+/* Utility */
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.no-competitions {
+    background: #f5f5f5;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    color: #5f5f6e;
+    font-size: 1.1em;
+    margin: 24px 0;
+}
+
+.select-prompt {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 22px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 1em;
+    margin: 16px 0;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.category-block, .competition-card { animation: fadeInUp 0.6s ease-out; }
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .categories { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+}
+
+@media (max-width: 768px) {
+    .header-content { flex-direction: column; gap: 20px; }
+    .categories { grid-template-columns: 1fr; }
+    .competition-actions { flex-direction: column; }
+}
+
+/* Existing styles (add these at the end) */
+.delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+.competition-item {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+#competition-list {
+    margin-top: 20px;
+}
+#message {
+    margin-top: 10px;
+    color: #2ecc71;
+}
+#message.error {
+    color: #e74c3c;
+}
+
+/* Existing styles (add these at the end) */
+.delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+.edit-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.edit-btn:hover {
+    background-color: #2980b9;
+}
+.competition-item {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+#competition-list {
+    margin-top: 20px;
+}
+#message {
+    margin-top: 10px;
+    color: #2ecc71;
+}
+#message.error {
+    color: #e74c3c;
+}
+
+/* === Authentication Pages === */
+
+/* This wrapper will center the card vertically */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    /* Uses the same background from your body tag */
+    background: linear-gradient(135deg, #f8f1e9 0%, #e8ecef 100%);
+}
+
+.auth-container {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(74, 74, 140, 0.15);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.auth-container h1 {
+    color: #4a4a8c;
+    font-size: 2.2em;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1c1c1e;
+}
+
+/* This is the class you already use on your inputs */
+.form-control {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 1em;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #4a4a8c;
+    box-shadow: 0 0 0 3px rgba(74, 74, 140, 0.1);
+}
+
+/* This is the class you already use on your submit button */
+.btn {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: white;
+    background: #4a4a8c;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: #3b3b70;
+    transform: translateY(-2px);
+}
+
+.auth-container p {
+    margin-top: 25px;
+    color: #5f5f6e;
+}
+
+.auth-container p a {
+    color: #4a4a8c;
+    font-weight: 600;
+    text-decoration: none;
+}
+.auth-container p a:hover {
+    text-decoration: underline;
+}
+
+/* Style for the flash messages */
+.flashes {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background: #ffebee; /* Light red */
+    color: #c62828; /* Dark red */
+    text-align: left;
+}
+
+.flashes p {
+    margin: 0;
+}
+
+/* === User Navigation (Top Bar) === */
+.user-nav {
+    background: #f3f4f6; /* A light, clean grey */
+    padding: 12px;
+    text-align: right;
+    border-bottom: 1px solid #e5e7eb;
+    /* Aligns it with the container padding */
+    padding-right: 5%; 
+}
+
+.user-nav span {
+    margin-right: 10px;
+    color: #5f5f6e; /* Dark grey text */
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+.user-nav a {
+    color: #4a4a8c; /* Theme purple */
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9em;
+    margin-left: 10px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.user-nav a:hover {
+    background: #e8ecef;
+    text-decoration: none;
+}

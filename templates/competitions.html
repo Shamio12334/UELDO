@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Competitions</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <h1>Ueldo</h1>
+  </div>
+</header>
+
+<main class="container">
+  <h2 id="category-title">Choose a subcategory</h2>
+  <div class="search-filter-section">
+    <div>
+      <label for="subcategory-dropdown" style="font-weight:700;color:#4a4a8c">Subcategory</label>
+      <select id="subcategory-dropdown">
+        <option value="">-- Select a Subcategory --</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <label style="font-weight:700;color:#4a4a8c">Status</label>
+      <select id="status-filter">
+        <option value="all">All</option>
+        <option value="scheduled">Scheduled</option>
+        <option value="upcoming">Upcoming / TBA</option>
+        <option value="past">Past</option>
+      </select>
+    </div>
+  </div>
+  
+  <div id="competition-details"></div>
+</main>
+
+<script src="{{ url_for('static', filename='competitions.js') }}"></script>
+</body>
+</html>
+

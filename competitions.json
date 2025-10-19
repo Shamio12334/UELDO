@@ -1,0 +1,28 @@
+{
+  "sports": {
+    "chess": [
+      {
+        "name": "Chess Tournament",
+        "description": "Matches with 5-minute time controls for players with an Elo rating of 1300 or below.",
+        "date": "2025-11-10",
+        "location": "Park Circus",
+        "participant_limit": 50,
+        "entry_fee": 200,
+        "prizes": "firstPlace- ₹4000, secondPlace - ₹1000",
+        "link": "https://docs.google.com/forms/d/e/1FAIpQLSfRCqSX2PG-4lDZMvLETC0Onx5S7dodaVnm6mPVcPgJq7GrYg/viewform?usp=preview",
+        "image": "https://drive.google.com/uc?export=view&id=189vkpzlXq01anZOP0daahm6ID7DNZShW"
+      }
+    ],
+    "athletics": [],
+    "football": [],
+    "esports": []
+  },
+  "creativity": {
+    "music": [],
+    "writing": [],
+    "art": []
+  },
+  "socials": {
+    "social_events": []
+  }
+}
