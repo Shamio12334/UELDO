@@ -518,3 +518,21 @@ nav {
     background: #e8ecef;
     text-decoration: none;
 }
+
+/* ... (at the end of the file) ... */
+
+.auth-forgot-link {
+    text-align: right;
+    margin-top: -10px; /* Pulls it up under the password box */
+    margin-bottom: 20px;
+}
+
+.auth-forgot-link a {
+    color: #5f5f6e; /* Subtler color */
+    font-size: 0.9em;
+    text-decoration: none;
+}
+.auth-forgot-link a:hover {
+    color: #4a4a8c; /* Theme color on hover */
+    text-decoration: underline;
+}

@@ -4,19 +4,19 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, f
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from pymongo import MongoClient
+from dotenv import load_dotenv  # <-- NEW IMPORT
 
 # Use the standard Flask constructor
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_default_secret_key_for_development_123')
 
-# --- NEW: DATABASE CONNECTION ---
-# We will set the MONGO_URI variable in our deployment host
-# For local testing, it will try to connect to a local MongoDB instance if you have one
+load_dotenv() # <-- NEW: This loads the variables from .env
+
+# --- DATABASE CONNECTION ---
+# This will now read the MONGO_URI from your .env file
 MONGO_URI = os.environ.get('MONGO_URI') 
 if not MONGO_URI:
     print("WARNING: MONGO_URI not set. Deployment will fail.")
-    # You can set a local fallback if you install MongoDB locally
-    # For now, we'll rely on the one we set for the migration script
     
 client = MongoClient(MONGO_URI)
 db = client.ueldo_db # This is our database name
@@ -41,7 +41,7 @@ def auth_required(f):
             {'WWW-Authenticate': 'Basic realm="Login Required"'})
     return decorated
 
-# --- NEW: DATABASE FUNCTIONS ---
+# --- DATABASE FUNCTIONS ---
 def load_competitions():
     # Find the single document that holds all competition data
     data = data_collection.find_one({"_id": "competitions"})
@@ -115,6 +115,62 @@ def login():
 def logout():
     session.pop('user_phone', None)
     return redirect(url_for('login_page'))
+
+# --- NEW: PASSWORD RESET ROUTES ---
+
+@app.route('/forgot-password')
+def forgot_password_page():
+    return render_template('forgot_password.html')
+
+@app.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    phone = request.form['phone']
+    
+    # Check if the user exists
+    user = users_collection.find_one({"phone": phone})
+    
+    if user:
+        # This is the basic, insecure method for local testing
+        session['phone_to_reset'] = phone
+        return redirect(url_for('reset_password_page'))
+    else:
+        flash('Phone number not found.')
+        return redirect(url_for('forgot_password_page'))
+
+@app.route('/reset-password')
+def reset_password_page():
+    # Make sure they came from the "forgot_password" step
+    if 'phone_to_reset' not in session:
+        flash('Please enter your phone number first.')
+        return redirect(url_for('forgot_password_page'))
+    return render_template('reset_password.html')
+
+@app.route('/reset-password', methods=['POST'])
+def reset_password():
+    if 'phone_to_reset' not in session:
+        # If the session is lost, send them back to the start
+        flash('Your session expired. Please try again.')
+        return redirect(url_for('forgot_password_page'))
+
+    phone_to_reset = session['phone_to_reset']
+    new_password = request.form['password']
+    
+    # Hash the new password
+    new_hash = generate_password_hash(new_password)
+    
+    # Update the user in the database
+    users_collection.update_one(
+        {"phone": phone_to_reset},
+        {"$set": {"hash": new_hash}}
+    )
+    
+    # Clear the session variable
+    session.pop('phone_to_reset', None)
+    
+    flash('Your password has been reset successfully. Please log in.')
+    return redirect(url_for('login_page'))
+
+# --- END OF NEW ROUTES ---
 
 @app.route('/competitions.html')
 def competitions_page():

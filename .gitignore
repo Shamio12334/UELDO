@@ -1,8 +1,11 @@
-# Python
+# Secrets
+.env
+
+# Virtual Environment
 venv/
+
+# Python cache
 __pycache__/
 *.pyc
 
-# OS Files
-.DS_Store
-Thumbs.db
+.vscode/
